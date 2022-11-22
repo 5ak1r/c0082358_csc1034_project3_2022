@@ -12,7 +12,7 @@ def load_graph(args):
     args -- arguments named tuple
 
     Returns:
-    A dict mapling a URL (str) to a list of target URLs (str).
+    A dict mapping a URL (str) to a list of target URLs (str).
     """
     # Iterate through the file line by line
     for line in args.datafile:
