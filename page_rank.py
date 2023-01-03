@@ -16,15 +16,21 @@ def load_graph(args):
     """
     # First one is key, second is value (data in school_web is a bunch of 2 node graphs)ssw
     # Iterate through the file line by line
+    gdict = dict()
     for line in args.datafile:
         # And split each line into two URLs
         node, target = line.split()
-        raise RuntimeError("This function is not implemented yet.")
+        # Check if url in keys, append current target to dict, else create new key and value using current values
+        if node in gdict.keys():
+            gdict[node].append(target)
+        else:
+            gdict[node] = [target]
 
+    return gdict
 
 def print_stats(graph):
     """Print number of nodes and edges in the given graph"""
-    raise RuntimeError("This function is not implemented yet.")
+
 
 
 def stochastic_page_rank(graph, args):
