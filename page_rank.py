@@ -3,6 +3,7 @@ import os
 import time
 import argparse
 from progress import Progress
+import random
 
 
 def load_graph(args):
@@ -14,7 +15,8 @@ def load_graph(args):
     Returns:
     A dict mapping a URL (str) to a list of target URLs (str).
     """
-    # First one is key, second is value (data in school_web is a bunch of 2 node graphs)ssw
+
+    # First one is key, second is value (data in school_web is a bunch of 2 node graphs)
     # Iterate through the file line by line
     gdict = dict()
     for line in args.datafile:
@@ -31,11 +33,13 @@ def load_graph(args):
 
 def print_stats(graph):
     """Print number of nodes and edges in the given graph"""
+
     nodes = len(graph)
-    edges = sum(len(target) for target in graph.values()) # Generator is faster than list comprehension
+    edges = sum(len(target) for target in graph.values())  # Generator is faster than list comprehension
 
     print(f"Number of Nodes: {nodes}")
     print(f"Number of edges: {edges}")
+
 
 def stochastic_page_rank(graph, args):
     """Stochastic PageRank estimation
@@ -51,7 +55,32 @@ def stochastic_page_rank(graph, args):
     a random walk that starts on a random node will after n_steps end
     on each node of the given graph.
     """
-    raise RuntimeError("This function is not implemented yet.")
+
+    # Create hit_count dict with keys being the nodes of the graph and the values all being 0
+    # initialize hit_count[node] with 0 for all nodes
+    hit_count = dict()
+    nodes = graph.keys()
+
+    for node in nodes:
+        hit_count[node] = 0
+
+    # randomly selects a node a number of times equal to the repetition argument
+    # repeat n_repetition times:
+    #     current_node < - randomly selected node
+    for repeat in range(args.repeats):
+        current_node = random.choice(nodes)
+
+        # select a random url from the target nodes of the previously selected node
+        # repeat n_steps times:
+        #     current_node <- uniformly randomly chosen among the out edges of current_node
+
+        for step in range(args.steps):
+            current_node = random.choice(graph[current_node])
+
+        # updating hit_count for the current node
+        # hit_count[current_node] += 1/n_repetitions
+
+        hit_count[current_node] += 1 / args.repeats
 
 
 def distribution_page_rank(graph, args):
