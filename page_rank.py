@@ -82,6 +82,8 @@ def stochastic_page_rank(graph, args):
 
         hit_count[current_node] += 1 / args.repeats
 
+    return hit_count
+
 
 def distribution_page_rank(graph, args):
     """Probabilistic PageRank estimation
