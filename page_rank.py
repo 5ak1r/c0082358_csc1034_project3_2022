@@ -28,10 +28,14 @@ def load_graph(args):
 
     return gdict
 
+
 def print_stats(graph):
     """Print number of nodes and edges in the given graph"""
+    nodes = len(graph)
+    edges = sum(len(target) for target in graph.values()) # Generator is faster than list comprehension
 
-
+    print(f"Number of Nodes: {nodes}")
+    print(f"Number of edges: {edges}")
 
 def stochastic_page_rank(graph, args):
     """Stochastic PageRank estimation
