@@ -115,9 +115,9 @@ def distribution_page_rank(graph, args):
         for node in nodes:
             next_prob[node] = 0
 
-        # do not need to make another for loop as it has the same condition
         # for each node:
         #     p <- node_prob[node] divided by its out degree
+        for node in nodes:
             p = node_prob[node] / len(graph[node])
 
             # updating probability
