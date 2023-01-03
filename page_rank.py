@@ -59,7 +59,7 @@ def stochastic_page_rank(graph, args):
     # Create hit_count dict with keys being the nodes of the graph and the values all being 0
     # initialize hit_count[node] with 0 for all nodes
     hit_count = dict()
-    nodes = graph.keys()
+    nodes = list(graph.keys())
 
     for node in nodes:
         hit_count[node] = 0
