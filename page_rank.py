@@ -1,7 +1,7 @@
 from sys import stderr, stdin
 from time import time
 from argparse import ArgumentParser, FileType
-from random import SystemRandom
+from random import choice
 
 def load_graph(args):
     """Load graph from text file
@@ -59,19 +59,18 @@ def stochastic_page_rank(graph, args):
     nodes = list(graph.keys())
     hit_count = {node: 0 for node in nodes}
 
-    rng = SystemRandom()
     # randomly selects a node a number of times equal to the repetition argument
     # repeat n_repetition times:
     #     current_node < - randomly selected node
     for repeat in range(args.repeats):
-        current_node = rng.choice(nodes)
+        current_node = choice(nodes)
 
         # select a random url from the target nodes of the previously selected node
         # repeat n_steps times:
         #     current_node <- uniformly randomly chosen among the out edges of current_node
 
         for step in range(args.steps):
-            current_node = rng.choice(graph[current_node])
+            current_node = choice(graph[current_node])
 
         # updating hit_count for the current node
         # hit_count[current_node] += 1/n_repetitions
