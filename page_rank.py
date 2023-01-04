@@ -1,10 +1,7 @@
-import sys
-import os
-import time
-import argparse
-from progress import Progress
-from random import choice
-
+from sys import stderr, stdin
+from time import time
+from argparse import ArgumentParser, FileType
+from random import SystemRandom
 
 def load_graph(args):
     """Load graph from text file
@@ -62,18 +59,19 @@ def stochastic_page_rank(graph, args):
     nodes = list(graph.keys())
     hit_count = {node: 0 for node in nodes}
 
+    rng = SystemRandom()
     # randomly selects a node a number of times equal to the repetition argument
     # repeat n_repetition times:
     #     current_node < - randomly selected node
     for repeat in range(args.repeats):
-        current_node = choice(nodes)
+        current_node = rng.choice(nodes)
 
         # select a random url from the target nodes of the previously selected node
         # repeat n_steps times:
         #     current_node <- uniformly randomly chosen among the out edges of current_node
 
         for step in range(args.steps):
-            current_node = choice(graph[current_node])
+            current_node = rng.choice(graph[current_node])
 
         # updating hit_count for the current node
         # hit_count[current_node] += 1/n_repetitions
@@ -129,8 +127,8 @@ def distribution_page_rank(graph, args):
     return node_prob
 
 
-parser = argparse.ArgumentParser(description="Estimates page ranks from link information")
-parser.add_argument('datafile', nargs='?', type=argparse.FileType('r'), default=sys.stdin,
+parser = ArgumentParser(description="Estimates page ranks from link information")
+parser.add_argument('datafile', nargs='?', type=FileType('r'), default=stdin,
                     help="Textfile of links among web pages as URL tuples")
 parser.add_argument('-m', '--method', choices=('stochastic', 'distribution'), default='stochastic',
                     help="selected page rank algorithm")
@@ -146,12 +144,12 @@ if __name__ == '__main__':
 
     print_stats(graph)
 
-    start = time.time()
+    start = time()
     ranking = algorithm(graph, args)
-    stop = time.time()
-    time = stop - start
+    stop = time()
+    final_time = stop - start
 
     top = sorted(ranking.items(), key=lambda item: item[1], reverse=True)
-    sys.stderr.write(f"Top {args.number} pages:\n")
+    stderr.write(f"Top {args.number} pages:\n")
     print('\n'.join(f'{100 * v:.2f}\t{k}' for k, v in top[:args.number]))
-    sys.stderr.write(f"Calculation took {time:.2f} seconds.\n")
+    stderr.write(f"Calculation took {final_time:.2f} seconds.\n")
