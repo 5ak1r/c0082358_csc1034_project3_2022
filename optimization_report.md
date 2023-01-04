@@ -33,3 +33,20 @@ only importing required methods from the modules that we
 were required to use. As a result, I managed to shorten the
 duration of the stochastic method from 50 seconds to 44
 seconds on my computer.
+
+After committing and attempting to recover evidence of
+multiprocessing, I realised that I had deleted most of it
+without making a copy of it anywhere. As a result, I will
+instead post a part of it which I did manage to recover in
+an attempt to prove that this was actually attempted.
+
+```
+def calculate_stochastic_page_rank(graph, args):
+    # Create a new process for each chunk of the graph
+    with Pool(4) as p:
+        # Remove open file TextIOWrapper Object
+        del vars(args)['datafile']
+        # Map the stochastic_page_rank function to each chunk of the graph
+        results = p.map(stochastic_page_rank, graph, args)
+        return results
+```
