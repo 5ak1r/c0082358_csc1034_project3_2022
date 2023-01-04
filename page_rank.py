@@ -3,6 +3,7 @@ from time import time
 from argparse import ArgumentParser, FileType
 from random import choice
 
+
 def load_graph(args):
     """Load graph from text file
 
@@ -99,7 +100,7 @@ def distribution_page_rank(graph, args):
     node_prob = dict()
     nodes = list(graph.keys())
 
-    node_prob = {node: 1/len(nodes) for node in nodes}
+    node_prob = {node: 1 / len(nodes) for node in nodes}
 
     # again, similar to stochastic, defining every value in this dict to be 0
     # repeat n_steps times:
@@ -112,7 +113,7 @@ def distribution_page_rank(graph, args):
         # for each node:
         #     p <- node_prob[node] divided by its out degree
         for node in nodes:
-            p = node_prob[node] * 1/len(graph[node])
+            p = node_prob[node] * 1 / len(graph[node])
 
             # updating probability
             # for each target among out edges of node:
