@@ -3,7 +3,7 @@ import os
 import time
 import argparse
 from progress import Progress
-import random
+from random import shuffle
 
 
 def load_graph(args):
@@ -41,24 +41,6 @@ def print_stats(graph):
     print(f"Number of edges: {edges}")
 
 
-def random_nodes_and_edges(graph):
-    """Created a random node generator to assist in optimization; saves creation of new lists every iteration"""
-
-    nodes = list(graph.keys())
-
-    while True:
-        node_index = random.randint(0, len(nodes)-1)
-        node = nodes[node_index]
-
-        edges = graph[node]
-
-        edge_index = random.randint(0, len(edges)-1)
-        edge = edges[edge_index]
-
-        yield node
-        yield edge
-
-
 def stochastic_page_rank(graph, args):
     """Stochastic PageRank estimation
 
@@ -75,25 +57,29 @@ def stochastic_page_rank(graph, args):
     """
 
     # Create hit_count dict with keys being the nodes of the graph and the values all being 0
+    # Defined nodes here to avoid creating a new list every single time I want to use the keys
     # initialize hit_count[node] with 0 for all nodes
     hit_count = dict()
-    node_edge_generator = random_nodes_and_edges(graph)
+    nodes = list(graph.keys())
 
-    for node in list(graph.keys()):
+    for node in nodes:
         hit_count[node] = 0
 
     # randomly selects a node a number of times equal to the repetition argument
     # repeat n_repetition times:
     #     current_node < - randomly selected node
     for repeat in range(args.repeats):
-        current_node = next(node_edge_generator)
+        shuffle(nodes)
+        current_node = nodes[0]
 
         # select a random url from the target nodes of the previously selected node
         # repeat n_steps times:
         #     current_node <- uniformly randomly chosen among the out edges of current_node
 
         for step in range(args.steps):
-            current_node = next(node_edge_generator)
+            edges = graph[current_node]
+            shuffle(edges)
+            current_node = edges[0]
 
         # updating hit_count for the current node
         # hit_count[current_node] += 1/n_repetitions

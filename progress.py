@@ -4,9 +4,9 @@ import time
 
 
 class Progress:
-    """Progress bar object for the comand line
+    """Progress bar object for the command line
 
-    This class allows to conveniently add progress bars to long running
+    This class allows to conveniently add progress bars to long-running
     calculations. It writes textual and graphical information about
     the progress of a text to sys.stderr. To be used in the following
     way:
