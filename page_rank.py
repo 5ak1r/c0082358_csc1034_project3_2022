@@ -3,7 +3,7 @@ import os
 import time
 import argparse
 from progress import Progress
-from random import shuffle
+from random import choice
 
 
 def load_graph(args):
@@ -59,27 +59,21 @@ def stochastic_page_rank(graph, args):
     # Create hit_count dict with keys being the nodes of the graph and the values all being 0
     # Defined nodes here to avoid creating a new list every single time I want to use the keys
     # initialize hit_count[node] with 0 for all nodes
-    hit_count = dict()
     nodes = list(graph.keys())
-
-    for node in nodes:
-        hit_count[node] = 0
+    hit_count = {node: 0 for node in nodes}
 
     # randomly selects a node a number of times equal to the repetition argument
     # repeat n_repetition times:
     #     current_node < - randomly selected node
     for repeat in range(args.repeats):
-        shuffle(nodes)
-        current_node = nodes[0]
+        current_node = choice(nodes)
 
         # select a random url from the target nodes of the previously selected node
         # repeat n_steps times:
         #     current_node <- uniformly randomly chosen among the out edges of current_node
 
         for step in range(args.steps):
-            edges = graph[current_node]
-            shuffle(edges)
-            current_node = edges[0]
+            current_node = choice(graph[current_node])
 
         # updating hit_count for the current node
         # hit_count[current_node] += 1/n_repetitions
@@ -108,8 +102,7 @@ def distribution_page_rank(graph, args):
     node_prob = dict()
     nodes = list(graph.keys())
 
-    for node in nodes:
-        node_prob[node] = 1 / len(nodes)
+    node_prob = {node: 1/len(nodes) for node in nodes}
 
     # again, similar to stochastic, defining every value in this dict to be 0
     # repeat n_steps times:
@@ -122,7 +115,7 @@ def distribution_page_rank(graph, args):
         # for each node:
         #     p <- node_prob[node] divided by its out degree
         for node in nodes:
-            p = node_prob[node] / len(graph[node])
+            p = node_prob[node] * 1/len(graph[node])
 
             # updating probability
             # for each target among out edges of node:
