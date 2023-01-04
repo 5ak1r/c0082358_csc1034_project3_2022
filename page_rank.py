@@ -41,6 +41,17 @@ def print_stats(graph):
     print(f"Number of edges: {edges}")
 
 
+def random_nodes_and_edges(graph):
+    """Created a random node generator to assist in optimization; saves creation of new lists every iteration"""
+
+    nodes = list(graph.keys())
+    while True:
+        node = random.choice(nodes)
+        edges = graph[node]
+        yield node
+        yield random.choice(edges)
+
+
 def stochastic_page_rank(graph, args):
     """Stochastic PageRank estimation
 
@@ -59,23 +70,23 @@ def stochastic_page_rank(graph, args):
     # Create hit_count dict with keys being the nodes of the graph and the values all being 0
     # initialize hit_count[node] with 0 for all nodes
     hit_count = dict()
-    nodes = list(graph.keys())
+    node_edge_generator = random_nodes_and_edges(graph)
 
-    for node in nodes:
+    for node in list(graph.keys()):
         hit_count[node] = 0
 
     # randomly selects a node a number of times equal to the repetition argument
     # repeat n_repetition times:
     #     current_node < - randomly selected node
     for repeat in range(args.repeats):
-        current_node = random.choice(nodes)
+        current_node = next(node_edge_generator)
 
         # select a random url from the target nodes of the previously selected node
         # repeat n_steps times:
         #     current_node <- uniformly randomly chosen among the out edges of current_node
 
         for step in range(args.steps):
-            current_node = random.choice(graph[current_node])
+            current_node = next(node_edge_generator)
 
         # updating hit_count for the current node
         # hit_count[current_node] += 1/n_repetitions
@@ -130,6 +141,7 @@ def distribution_page_rank(graph, args):
         node_prob = next_prob
 
     return node_prob
+
 
 parser = argparse.ArgumentParser(description="Estimates page ranks from link information")
 parser.add_argument('datafile', nargs='?', type=argparse.FileType('r'), default=sys.stdin,
