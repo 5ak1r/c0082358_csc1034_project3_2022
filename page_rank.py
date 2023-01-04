@@ -45,11 +45,18 @@ def random_nodes_and_edges(graph):
     """Created a random node generator to assist in optimization; saves creation of new lists every iteration"""
 
     nodes = list(graph.keys())
+
     while True:
-        node = random.choice(nodes)
+        node_index = random.randint(0, len(nodes)-1)
+        node = nodes[node_index]
+
         edges = graph[node]
+
+        edge_index = random.randint(0, len(edges)-1)
+        edge = edges[edge_index]
+
         yield node
-        yield random.choice(edges)
+        yield edge
 
 
 def stochastic_page_rank(graph, args):
